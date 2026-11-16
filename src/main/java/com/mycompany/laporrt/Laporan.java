@@ -4,21 +4,18 @@
  */
 package com.mycompany.laporrt;
 
-/**
- *
- * @author h y p e
- */
 import java.time.LocalDate;
+
 
 public class Laporan {
     public static final String MENUNGGU = "Menunggu";
     public static final String DIPROSES = "Diproses";
     public static final String SELESAI = "Selesai";
 
-    private static int counter = 0; 
+    private static int counter = 0; // untuk membuat ID otomatis
 
     private int idLaporan;
-    private String jenis;       
+    private String jenis;       // "Laporan" atau "Aspirasi"
     private String judul;
     private String kategori;
     private String deskripsi;
@@ -30,8 +27,6 @@ public class Laporan {
 
     public Laporan(String jenis, String judul, String kategori, String deskripsi,
                    String lokasi, Warga pelapor) {
-        counter++;
-        this.idLaporan = counter;
         this.jenis = jenis;
         setJudul(judul);
         setKategori(kategori);
@@ -41,8 +36,12 @@ public class Laporan {
         this.tanggal = LocalDate.now();
         this.status = MENUNGGU;
         this.catatan = "-";
+        // ID dibuat paling akhir supaya nomor tidak terpakai jika validasi gagal
+        counter++;
+        this.idLaporan = counter;
     }
 
+    // ===== Getter =====
     public int getIdLaporan() { return idLaporan; }
     public String getJenis() { return jenis; }
     public String getJudul() { return judul; }
@@ -84,7 +83,7 @@ public class Laporan {
     }
 
     public void setStatus(String status) {
-        if (!status.equals(MENUNGGU) && !status.equals(DIPROSES) && !status.equals(SELESAI)) {
+        if (!MENUNGGU.equals(status) && !DIPROSES.equals(status) && !SELESAI.equals(status)) {
             throw new IllegalArgumentException("Status tidak valid.");
         }
         this.status = status;
@@ -98,6 +97,20 @@ public class Laporan {
         }
     }
 
+    /** Teks detail laporan, dipakai oleh GUI (TextArea). */
+    public String getDetailText() {
+        return "ID Laporan   : " + idLaporan + "\n"
+             + "Jenis        : " + jenis + "\n"
+             + "Pelapor      : " + pelapor.getNama() + "\n"
+             + "Judul        : " + judul + "\n"
+             + "Kategori     : " + kategori + "\n"
+             + "Deskripsi    : " + deskripsi + "\n"
+             + "Lokasi       : " + lokasi + "\n"
+             + "Tanggal      : " + tanggal + "\n"
+             + "Status       : " + status + "\n"
+             + "Tindak lanjut: " + catatan;
+    }
+
     public void tampilkanRingkas() {
         System.out.printf("[ID %d] %-8s | %-25s | %-18s | %s%n",
                 idLaporan, jenis, judul, kategori, status);
@@ -105,16 +118,7 @@ public class Laporan {
 
     public void tampilkanDetail() {
         System.out.println("----------------------------------------");
-        System.out.println("ID Laporan : " + idLaporan);
-        System.out.println("Jenis      : " + jenis);
-        System.out.println("Pelapor    : " + pelapor.getNama());
-        System.out.println("Judul      : " + judul);
-        System.out.println("Kategori   : " + kategori);
-        System.out.println("Deskripsi  : " + deskripsi);
-        System.out.println("Lokasi     : " + lokasi);
-        System.out.println("Tanggal    : " + tanggal);
-        System.out.println("Status     : " + status);
-        System.out.println("Tindak lanjut: " + catatan);
+        System.out.println(getDetailText());
         System.out.println("----------------------------------------");
     }
 }
